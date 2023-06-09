@@ -51,11 +51,14 @@ class UserInDB(User):
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth_2_schema = OAuth2PasswordBearer(tokenUrl="token")
 
-app = FastAPI()
-
-# base url path
-base_url = "/api/v1/weda-gedara"
-
+app = FastAPI(
+    docs_url=env['BASE_URL']+"/docs",
+    redoc_url=None,
+    title="Weda Gedara FastAPI",
+    description="New world apis from chamodex::",
+    version="1.0",
+    openapi_url=env['BASE_URL']+"/openapi.json" 
+)
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -120,7 +123,7 @@ async def get_current_active_user(current_user: UserInDB = Depends(get_current_u
     return current_user
 
 
-@app.post(base_url+"/token", response_model=Token)
+@app.post(env['BASE_URL']+"/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
@@ -131,6 +134,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": user.email}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.get(base_url+"/users/me/", response_model=User)
+@app.get(env['BASE_URL']+"/users/me/", response_model=User)
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
