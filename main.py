@@ -1,13 +1,14 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from os import environ as env
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-SECRET_KEY = "381668887f8042aeb59309e3fb697fc4289deaf1e7ea2c1194810e6e2b982689"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRATION_MINUTES = 30
+SECRET_KEY = env['SECRET_KEY']
+ALGORITHM = env['ALGORITHM']
+ACCESS_TOKEN_EXPIRATION_MINUTES = int(env['ACCESS_TOKEN_EXPIRATION_MINUTES'])
 
 db = {
     "chamod@gmail.com": {
