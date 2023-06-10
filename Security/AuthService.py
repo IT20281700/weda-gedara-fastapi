@@ -4,7 +4,7 @@ from Imports.Imports import *
 
 from fastapi.security import OAuth2PasswordBearer
 
-from db.db import db
+from config.db import db
 from models.TokenModel import TokenData
 from models.UserModel import UserInDB
 

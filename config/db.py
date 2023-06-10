@@ -14,3 +14,7 @@ db = {
         "disabled": False
     },
 }
+
+from pymongo import MongoClient
+
+conn = MongoClient()

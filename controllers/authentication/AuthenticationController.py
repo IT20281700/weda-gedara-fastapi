@@ -3,7 +3,7 @@ from Imports.Imports import *
 from datetime import timedelta
 from fastapi.security import OAuth2PasswordRequestForm
 from Security.AuthService import authenticate_user, create_access_token
-from db.db import db
+from config.db import db
 from models.TokenModel import Token
 
 ACCESS_TOKEN_EXPIRATION_MINUTES = int(env['ACCESS_TOKEN_EXPIRATION_MINUTES'])
