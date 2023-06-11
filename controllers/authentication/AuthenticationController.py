@@ -8,6 +8,8 @@ from config.db import get_connection
 from models.RegisterUserModel import RegisterUserDto
 from models.TokenModel import Token
 from os import environ as env
+from models.UserModel import LoginRequest
+from models.error.ErrorModel import BadAlertException
 from models.response.CreateResponseModel import CreateResponseModel
 from useEnum.Enum import SchemasEnum, SchemaSequencesEnum
 from utils.common.SequenceGenerator import get_next_sequence_value
@@ -25,12 +27,12 @@ router = APIRouter(
 
 
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login_for_access_token(loginReq: LoginRequest):
     log.info("login_for_access_token method called:")
     # get db connection
     db = get_connection()
     user = authenticate_user(
-        db[SchemasEnum.USER.value], form_data.username, form_data.password)
+        db[SchemasEnum.USER.value], loginReq.username, loginReq.password)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Incorrect email or password", headers={"WWW-Authenticate": "Bearer"})
@@ -46,6 +48,12 @@ async def register_app_user(user: RegisterUserDto):
     # get db connection
     db = get_connection()
     try:
+        # validate email already exists
+        user_exists = db.get_collection(
+            SchemasEnum.USER.value).find_one({"email": user.email})
+        if user_exists:
+            raise BadAlertException("Email already exists with another user.")
+
         # generate sequence and insert to dto
         user.user_id = get_next_sequence_value(
             SchemasEnum.SEQUENCES.value, SchemaSequencesEnum.USER.value, db)
