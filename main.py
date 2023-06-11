@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
+from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from controllers.authentication import AuthenticationController
@@ -10,6 +11,10 @@ from models.response.CreateResponseModel import CreateResponseModel
 from config import db
 
 from os import environ as env
+
+
+local = {"url": "http://localhist:9001", "description": "local testing server"}
+main = {"url": "https://weda-gedara-fastapi-3adpvrrvqq-uc.a.run.app", "description": "live server"}
 
 app = FastAPI(
     docs_url=env['BASE_URL'] + "/docs",
@@ -23,7 +28,18 @@ app = FastAPI(
         401: {"model": ErrorDto},
         201: {"model": CreateResponseModel},
         422: {"model": UnprocessableErrorDto}
-    }
+    },
+    servers=[local, main]
+)
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 

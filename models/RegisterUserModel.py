@@ -6,16 +6,16 @@ from pydantic import BaseModel
 
 class RegisterUserDto(BaseModel):
     user_id: int | None = None
-    user_type: str | None = None
-    first_name: str | None = None
-    last_name: str | None = None
-    gender: str | None = None
+    user_type: str
+    first_name: str
+    last_name: str
+    gender: str
     email: str
-    mobile: str | None = None
-    hashed_password: str | None = None
-    address: str | None = None
-    addr_no: str | None = None
-    zip_code: int | None = None
+    mobile: str
+    hashed_password: str
+    address: str
+    addr_no: str
+    zip_code: int
     state: str | None = None
-    city: str | None = None
+    city: str
     disabled: bool | None = None
