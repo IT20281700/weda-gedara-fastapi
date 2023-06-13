@@ -39,7 +39,10 @@ async def login_for_access_token(loginReq: LoginRequest):
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRATION_MINUTES)
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires)
-    return {"access_token": access_token, "token_type": "bearer"}
+
+    token_model = Token(access_token=access_token, token_type="bearer", expires_in=access_token_expires.total_seconds()*1000)
+
+    return token_model
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -67,7 +70,7 @@ async def register_app_user(user: RegisterUserDto):
 
         # save
         result = db[SchemasEnum.USER.value].insert_one(dict(user))
-        return CreateResponseModel(id=str(result.inserted_id), status="success", desc="User registration successful")
+        return CreateResponseModel(id=str(user.user_id), status="success", desc="User registration successful")
     except Exception as e:
         if isinstance(e, RequestValidationError):
             log.error(e.errors())
