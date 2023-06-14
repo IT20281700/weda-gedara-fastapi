@@ -39,6 +39,7 @@ pyasn1==0.5.0
 pycparser==2.21
 pydantic==1.10.9
 pyenchant==3.2.2
+PyJWT==2.7.0
 pykickstart==3.47
 pymongo==4.3.3
 pyOpenSSL==21.0.0

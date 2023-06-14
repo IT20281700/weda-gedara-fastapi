@@ -1,3 +1,5 @@
+import datetime
+from typing import Collection
 from bson import ObjectId
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordRequestForm
@@ -8,9 +10,10 @@ from config.db import get_connection
 from models.RegisterUserModel import RegisterUserDto
 from models.TokenModel import Token
 from os import environ as env
-from models.UserModel import LoginRequest
+from models.UserModel import LoginRequest, User
 from models.error.ErrorModel import BadAlertException
 from models.response.CreateResponseModel import CreateResponseModel
+from models.response.ResponseTemplateModes import userEntity
 from useEnum.Enum import SchemasEnum, SchemaSequencesEnum
 from utils.common.SequenceGenerator import get_next_sequence_value
 
@@ -40,7 +43,18 @@ async def login_for_access_token(loginReq: LoginRequest):
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires)
 
-    token_model = Token(access_token=access_token, token_type="bearer", expires_in=access_token_expires.total_seconds()*1000)
+    token_model = Token(access_token=access_token, token_type="bearer",
+                        expires_in=access_token_expires.total_seconds()*1000)
+
+    # update user last login
+    userTb: RegisterUserDto = userEntity(db[SchemasEnum.USER.value].find_one(
+        {'email': loginReq.username}))
+    update = db[SchemasEnum.USER.value].find_one_and_update(
+        {'email': loginReq.username},
+        {'$set': {
+            'last_login': userTb['login_time'],
+            'login_time': datetime.datetime.now()
+        }})
 
     return token_model
 

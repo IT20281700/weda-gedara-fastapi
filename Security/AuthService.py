@@ -1,7 +1,8 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta
-from jose import ExpiredSignatureError, JWTError, jwt
+from jose import ExpiredSignatureError, JWTError
+import jwt
 from passlib.context import CryptContext
 from config.db import get_connection
 from models.TokenModel import TokenData
@@ -61,7 +62,8 @@ async def get_current_user(token: str = Depends(oauth_2_schema)):
                                          headers={"WWW-Authenticate": "Bearer"})
     try:
         db = get_connection().get_collection(SchemasEnum.USER.value)
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[
+                             ALGORITHM], options={"verify_signature": False})
         email: str = payload.get('sub')
         if email is None:
             raise credential_exception

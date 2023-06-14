@@ -1,4 +1,5 @@
 from dataclasses import Field
+import datetime
 from typing import Optional
 from bson import ObjectId
 from pydantic import BaseModel
@@ -9,6 +10,7 @@ class RegisterUserDto(BaseModel):
     user_type: str
     first_name: str
     last_name: str
+    birth_date: datetime.date
     gender: str
     email: str
     mobile: str
@@ -19,3 +21,5 @@ class RegisterUserDto(BaseModel):
     state: str | None = None
     city: str
     disabled: bool | None = None
+    login_time: datetime.datetime | None = None
+    last_login: datetime.datetime | None = None
