@@ -23,3 +23,18 @@ def userEntity(item) -> dict:
 # User class list mapper
 def userListEntity(entity) -> list:
     return [userEntity(item) for item in entity]
+
+
+# Category class mapper
+def categoryEntity(item) -> dict:
+    return {
+        "cat_id": item["cat_id"],
+        "cat_code": item["cat_code"],
+        "cat_name": item["cat_name"],
+        "cat_desp": item["cat_desp"],
+        "disabled": item["disabled"]
+    }
+
+# Category class list mapper
+def categoryListEntity(entity) -> list:
+    return [categoryEntity(item) for item in entity]

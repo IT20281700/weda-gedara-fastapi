@@ -9,9 +9,11 @@ class InitializeEnum(Enum):
 class SchemasEnum(Enum):
     USER = "user"
     TOKEN = "token"
+    CATEGORY = "category"
     SEQUENCES = "table_sequences"
 
 
 class SchemaSequencesEnum(Enum):
     USER = "user_sequence"
     TOKEN = "token_sequence"
+    CATEGORY = "category_sequence"
