@@ -163,4 +163,28 @@ async def delete_category_by_cat_id(cat_id: int):
             log.error(e)
             raise HTTPException(status_code=400, detail=f"{e}")
         
+@router.get("/category/next_cat_code", response_model=str, status_code=status.HTTP_200_OK)
+async def get_next_cat_code():
+    log.info("get next cat code called")
+    try:
+        # db = get_connection().get_collection(SchemasEnum.CATEGORY.value)
+        # last_rec_id = db.find_one({}, {"sort": {"cat_id": -1}})
+        # last_rec: Category = db.find_one({"_id": last_rec_id['_id']})
+
+        db = get_connection().get_collection(SchemasEnum.SEQUENCES.value)
+        
+        next_cat_id_rec = db.find_one({'_id': SchemaSequencesEnum.CATEGORY.value})
+        next_cat_id = next_cat_id_rec["sequence_value"]
+        
+        next_cat_code = f"C{next_cat_id:03}"
+
+        return next_cat_code
+    except Exception as e:
+        if isinstance(e, RequestValidationError):
+            log.error(e.errors())
+            raise HTTPException(status_code=400, detail=f"{e.errors()}")
+        else:
+            log.error(e)
+            raise HTTPException(status_code=400, detail=f"{e}")
+        
 ## category apis closed
