@@ -175,6 +175,7 @@ async def get_next_cat_code():
         
         next_cat_id_rec = db.find_one({'_id': SchemaSequencesEnum.CATEGORY.value})
         next_cat_id = next_cat_id_rec["sequence_value"]
+        next_cat_id = next_cat_id+1
         
         next_cat_code = f"C{next_cat_id:03}"
 
