@@ -6,6 +6,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from controllers.authentication import AuthenticationController
 from controllers.test import TestController
 from controllers.user import UserController
+from controllers.stock import StockController
 from controllers.references import ReferencesController
 from models.error.ErrorModel import BadAlertException, ErrorDto, UnprocessableErrorDto
 from models.response.CreateResponseModel import CreateResponseModel
@@ -57,6 +58,7 @@ async def root():
 # include all controller routers
 app.include_router(AuthenticationController.router)  # authentication router
 app.include_router(UserController.router)  # user router
+app.include_router(StockController.router)  # stock router
 app.include_router(TestController.router)  # test router
 app.include_router(ReferencesController.router) # reference router
 

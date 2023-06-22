@@ -7,7 +7,8 @@ from models.CategoryModel import Category
 from models.error.ErrorModel import BadAlertException
 from models.response.CreateResponseModel import CreateResponseModel
 from models.response.DeleteResponseModel import DeleteResponse
-from useEnum.Enum import SchemaSequencesEnum, SchemasEnum
+from useEnum.Enum import Code, SchemaSequencesEnum, SchemasEnum
+from utils.common.Common import gen_next_code
 from utils.common.SequenceGenerator import get_next_sequence_value
 from models.response.ResponseTemplateModes import categoryEntity, categoryListEntity
 
@@ -167,19 +168,14 @@ async def delete_category_by_cat_id(cat_id: int):
 async def get_next_cat_code():
     log.info("get next cat code called")
     try:
-        # db = get_connection().get_collection(SchemasEnum.CATEGORY.value)
-        # last_rec_id = db.find_one({}, {"sort": {"cat_id": -1}})
-        # last_rec: Category = db.find_one({"_id": last_rec_id['_id']})
-
         db = get_connection().get_collection(SchemasEnum.SEQUENCES.value)
         
-        next_cat_id_rec = db.find_one({'_id': SchemaSequencesEnum.CATEGORY.value})
-        next_cat_id = next_cat_id_rec["sequence_value"]
-        next_cat_id = next_cat_id+1
+        id = db.find_one({'_id': SchemaSequencesEnum.CATEGORY.value})
+        c_id = id["sequence_value"]
         
-        next_cat_code = f"C{next_cat_id:03}"
+        c_code = gen_next_code(c_id, Code.CATEGORY.value)
 
-        return next_cat_code
+        return c_code
     except Exception as e:
         if isinstance(e, RequestValidationError):
             log.error(e.errors())

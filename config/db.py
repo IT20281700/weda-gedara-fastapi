@@ -4,7 +4,7 @@ from os import environ as env
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from models.response.CreateResponseModel import CreateResponseModel
-from useEnum.Enum import InitializeEnum, SchemasEnum
+from useEnum.Enum import InitializeEnum, SchemaSequencesEnum, SchemasEnum
 
 # logger
 from Imports.logger import logging
@@ -51,8 +51,16 @@ def admin_init_tables():
                 db.create_collection(tableName.value)
                 log.info(tableName.value+" :: collection created")
 
+        # check and create sequence list
+        for sequence in SchemaSequencesEnum:
+            if not db[SchemasEnum.SEQUENCES.value].find_one({'_id': sequence.value}):
+                db[SchemasEnum.SEQUENCES.value].insert_one(
+                    {"_id": sequence.value, "sequence_value": 0},
+                )
+                log.info(sequence.value+" :: sequence created")
+
         # success
-        log.info("Table creation successfull")
+        log.info("Table and Sequences creation successfull")
 
         response = CreateResponseModel(
             id=InitializeEnum.INT.value,
