@@ -15,5 +15,5 @@ class Transaction(BaseModel):
     measure_unit: str | None = None
     curr_code: str | None = "LKR"
     accounting: bool | None = False
-    created_datetime: datetime.datetime | None = datetime.datetime.now()
+    created_datetime: datetime.datetime | None = None
     disabled: bool | None = False

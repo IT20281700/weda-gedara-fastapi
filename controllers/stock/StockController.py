@@ -1,4 +1,5 @@
 
+import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.exceptions import RequestValidationError
 
@@ -54,6 +55,9 @@ async def add_new_stock(stock: Stock):
         stock.stock_id = get_next_sequence_value(
             SchemasEnum.SEQUENCES.value, SchemaSequencesEnum.STOCK.value, db)
 
+        stock.created_datetime = datetime.datetime.now()
+        stock.updated_datetime = datetime.datetime.now() 
+
         ## generate create transaction record
         trx: Transaction = Transaction()
         trx.trx_id = get_next_sequence_value(
@@ -64,6 +68,7 @@ async def add_new_stock(stock: Stock):
         trx.manufacture = stock.manufacture
         trx.measure_unit = stock.measure_unit
         trx.curr_code = stock.curr_code
+        trx.created_datetime = datetime.datetime.now()
         
         ## save all
         s_result = db[SchemasEnum.STOCK.value].insert_one(dict(stock))
@@ -150,6 +155,7 @@ async def update_stock_by_stock_id(stock_id: int, stock: Stock):
         u_stock.curr_code = stock.curr_code
         u_stock.desp = stock.desp
         u_stock.manufacture = stock.manufacture
+        u_stock.updated_datetime = datetime.datetime.now()
 
         # update
         result: StockView = stockEntity(

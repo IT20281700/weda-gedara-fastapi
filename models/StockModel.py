@@ -17,9 +17,9 @@ class Stock(BaseModel):
     prev_unit_price: float | None = 0.0
     unit_price: float | None = 0.0
     curr_code: str | None = "LKR"
-    filled_datetime: datetime.datetime | None = 'null'
-    created_datetime: datetime.datetime | None = datetime.datetime.now()
-    updated_datetime: datetime.datetime = datetime.datetime.now()
+    filled_datetime: datetime.datetime | None = None
+    created_datetime: datetime.datetime | None = None
+    updated_datetime: datetime.datetime | None = None
     disabled: bool | None = False
 
 

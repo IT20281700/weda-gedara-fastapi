@@ -59,12 +59,11 @@ async def root():
 app.include_router(AuthenticationController.router)  # authentication router
 app.include_router(UserController.router)  # user router
 app.include_router(StockController.router)  # stock router
-app.include_router(TestController.router)  # test router
 app.include_router(ReferencesController.router) # reference router
-
 
 app.include_router(db.router)  # admin db router
 
+app.include_router(TestController.router)  # test router
 
 # global error handler
 @app.exception_handler(RequestValidationError)
